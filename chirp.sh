@@ -2,6 +2,7 @@
 
 
 NAME="chirp"
+VERSION="20240427"
 #VALID_DONGLES="067b:2303"  # Prolific Technology, Inc. PL2303 Serial Port
 VALID_DONGLES="1a86:7523"  # Prolific Technology, Inc. PL2303 Serial Port
 
@@ -31,14 +32,15 @@ xhost +local:docker
 
 
 # Build
-docker build -t "local/${NAME}" $(realpath $(dirname $0))
+#docker build -t "local/${NAME}" $(realpath $(dirname $0))
 
 
 # Run
 docker run --rm -i -t \
-       ${DEV_FLAG} \
+       --device=/dev/ttyUSB0\
        --device=/dev/dri:/dev/dri \
        --volume ${HOME}/.config/gqrx:/root/.config/gqrx \
+       --volume ${HOME}/Documentos/mis_doc/Radio:/root/Radio \
        --volume /dev/shm:/dev/shm \
        --volume /tmp/.X11-unix:/tmp/.X11-unix:ro \
        --volume /run/user/$(id -u)/pulse:/run/pulse:ro \
@@ -48,4 +50,4 @@ docker run --rm -i -t \
        --env USER_GID=$(id -g) \
        --env DISPLAY=unix$DISPLAY \
        --name $NAME \
-       local/${NAME} $@
+       ${NAME}${VERSION} $@
